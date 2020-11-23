@@ -16,4 +16,6 @@ public interface CarDao {
     void update(Car car);
 
     void delete(long id);
+
+    List<Car> getCarListFilteredByYear(int yearFrom, int yearTo);
 }

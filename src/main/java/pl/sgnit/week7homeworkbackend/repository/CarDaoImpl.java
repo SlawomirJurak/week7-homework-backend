@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
+import org.springframework.web.bind.annotation.GetMapping;
 import pl.sgnit.week7homeworkbackend.model.Car;
 
 import java.sql.Date;
@@ -33,18 +34,10 @@ public class CarDaoImpl implements CarDao {
 
     @Override
     public List<Car> findAll() {
-        List<Car> carList = new ArrayList<>();
         String sql = "select * from cars";
         List<Map<String, Object>> cars = jdbcTemplate.queryForList(sql);
 
-        cars.stream().forEach(car -> carList.add(new Car(
-                (long) car.get("id"),
-                (String) car.get("mark"),
-                (String) car.get("model"),
-                (String) car.get("color"),
-                (int) car.get("production_year")
-        )));
-        return carList;
+        return createCarList(cars);
     }
 
     @Override
@@ -76,5 +69,25 @@ public class CarDaoImpl implements CarDao {
         String sql = "delete from cars where id=?";
 
         jdbcTemplate.update(sql, id);
+    }
+
+    public List<Car> getCarListFilteredByYear(int yearFrom, int yearTo) {
+        String sql = "select * from cars where production_year between ? and ?";
+        List<Map<String, Object>> cars = jdbcTemplate.queryForList(sql, yearFrom, yearTo);
+
+        return createCarList(cars);
+    }
+
+    private List<Car> createCarList(List<Map<String, Object>> cars) {
+        List<Car> carList = new ArrayList<>();
+
+        cars.stream().forEach(car -> carList.add(new Car(
+                (long) car.get("id"),
+                (String) car.get("mark"),
+                (String) car.get("model"),
+                (String) car.get("color"),
+                (int) car.get("production_year")
+        )));
+        return carList;
     }
 }

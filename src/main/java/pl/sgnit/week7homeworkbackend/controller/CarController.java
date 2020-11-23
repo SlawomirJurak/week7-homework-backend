@@ -56,4 +56,9 @@ public class CarController {
     public void deleteCar(@PathVariable Long id) {
         carDao.delete(id);
     }
+
+    @GetMapping("/{yearFrom}/{yearTo}")
+    public List<Car> getCarListFilteredByYear(@PathVariable int yearFrom, @PathVariable int yearTo) {
+        return carDao.getCarListFilteredByYear(yearFrom, yearTo);
+    }
 }
